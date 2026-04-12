@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoleVibe | Premium Footwear</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="navbar" id="navbar">
+            <div class="nav-brand">
+                <i class="fa-solid fa-shoe-prints"></i> SOLEVIBE
+            </div>
+            <div class="nav-links">
+                <button class="nav-btn active" data-view="home-view"><i class="fa-solid fa-house"></i> Home</button>
+                <button class="nav-btn" data-view="cart-view" id="nav-cart-btn">
+                    <i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-count">0</span>
+                </button>
+                <button class="nav-btn hidden" data-view="admin-view" id="nav-admin-btn"><i class="fa-solid fa-shield-halved"></i> Admin</button>
+                <button class="nav-btn" data-view="auth-view" id="nav-auth-btn"><i class="fa-solid fa-user"></i> Login</button>
+                <button class="nav-btn hidden" id="nav-logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Home View (Customer storefront) -->
+            <section id="home-view" class="view active">
+                <header class="hero">
+                    <div class="hero-content">
+                        <h1>Step Into the Future.</h1>
+                        <p>Discover premium footwear curated for trendsetters. Unleash your style.</p>
+                    </div>
+                </header>
+                <div class="products-section">
+                    <h2>Trending Collection</h2>
+                    <div class="product-grid" id="product-grid">
+                        <!-- Products injected here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cart View -->
+            <section id="cart-view" class="view hidden">
+                <div class="cart-container">
+                    <h2>Your Shopping Cart</h2>
+                    <div class="cart-content">
+                        <div class="cart-items" id="cart-items">
+                            <!-- Cart items injected here -->
+                        </div>
+                        <div class="cart-summary">
+                            <h3>Order Summary</h3>
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="cart-subtotal">$0.00</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span id="cart-total">$0.00</span>
+                            </div>
+                            <button class="btn btn-primary btn-block" id="checkout-btn">Proceed to Checkout</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Auth View -->
+            <section id="auth-view" class="view hidden">
+                <div class="auth-container glass">
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" data-form="login">Login</button>
+                        <button class="auth-tab" data-form="register">Register</button>
+                    </div>
+
+                    <form id="login-form" class="auth-form active">
+                        <h3>Welcome Back</h3>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="login-username" placeholder="Username" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    </form>
+
+                    <form id="register-form" class="auth-form hidden">
+                        <h3>Create Account</h3>
+                        <div class="input-group">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="reg-username" placeholder="Username" required>
+                        </div>
+                        <div class="input-group">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="reg-password" placeholder="Password" required>
+                        </div>
+                        <div class="input-group role-group">
+                            <label><input type="radio" name="role" value="customer" checked> Customer</label>
+                            <label><input type="radio" name="role" value="admin"> Admin</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Register</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Admin View -->
+            <section id="admin-view" class="view hidden">
+                <div class="admin-container">
+                    <div class="admin-header">
+                        <h2>Admin Dashboard</h2>
+                        <p>Manage shoe inventory</p>
+                    </div>
+                    
+                    <div class="admin-grid">
+                        <div class="admin-form-card glass">
+                            <h3>Add New Shoe</h3>
+                            <form id="add-shoe-form">
+                                <div class="input-group">
+                                    <input type="text" id="shoe-name" placeholder="Shoe Name" required>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="shoe-brand" placeholder="Brand" required>
+                                </div>
+                                <div class="input-group">
+                                    <input type="number" id="shoe-price" placeholder="Price ($)" step="0.01" required>
+                                </div>
+                                <div class="input-group">
+                                    <input type="url" id="shoe-image" placeholder="Image URL (e.g. https://...)" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-plus"></i> Add Shoe</button>
+                            </form>
+                        </div>
+                        
+                        <div class="admin-inventory">
+                            <h3>Current Inventory</h3>
+                            <div class="inventory-list" id="inventory-list">
+                                <!-- Inventory items injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <!-- Toast Notifications -->
+        <div id="toast-container"></div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
