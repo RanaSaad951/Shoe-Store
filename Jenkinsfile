@@ -1,58 +1,61 @@
 pipeline {
     agent any
-
+    
     environment {
-        // App ka port aur URL
-        APP_URL = 'http://localhost:5000'
+        // Yeh line automatically us banday ka email nikalegi jisne GitHub par push kiya hai
+        PUSHER_EMAIL = sh(script: "git --no-pager show -s --format='%ae'", returnStdout: true).trim()
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // GitHub se code layega[cite: 1]
                 checkout scm
             }
         }
-
+        
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker Image for Shoe Store...'
-                // Nayi Dockerfile se image banayega[cite: 1]
                 sh 'docker build -t shoe-store-app .'
             }
         }
-
+        
         stage('Run Container & Test') {
             steps {
                 echo 'Running Container and Executing Selenium Tests...'
-                // Container start karega aur uske andar tests chalayega[cite: 1]
-                sh '''
-                docker run -d --name shoe-store-container -p 5000:5000 shoe-store-app
-                sleep 10
-                docker exec shoe-store-container npx mocha test.js
-                '''
+                // Puraane container ko clear karna (agar koi pehle se chal raha ho)
+                sh 'docker stop shoe-store-container || true'
+                sh 'docker rm shoe-store-container || true'
+                
+                // Naya container detached mode (-d) mein chalana
+                sh 'docker run -d --name shoe-store-container -p 5000:5000 shoe-store-app'
+                
+                // Container ko thora time dena start hone ke liye
+                sh 'sleep 10'
+                
+                // Tests run karna
+                sh 'docker exec shoe-store-container npx mocha test.js'
             }
         }
     }
-
+    
     post {
-        always {
-            echo 'Cleaning up container...'
-            sh 'docker stop shoe-store-container || true'
-            sh 'docker rm shoe-store-container || true'
-        }
         success {
-            echo 'Tests Passed! Sending Email...'
-            // Sir Qasim ko email bhejega[cite: 1]
-            mail to: 'qasimalik@gmail.com',
-                 subject: 'Jenkins Pipeline Success: Shoe Store Tests',
-                 body: 'Hello Sir,\n\nThe automated Selenium test cases for the Shoe Store application have been executed successfully via Jenkins pipeline.\n\nRegards.'
+            echo "Tests Passed! Container is UP on port 5000. Sending Email..."
+            // Yahan hum container ko stop/rm nahi kar rahe taake deployment "UP" rahe
+            mail to: "${PUSHER_EMAIL}",
+                 subject: "SUCCESS: Shoe Store Pipeline Passed",
+                 body: "Good news! Your push was successful. The 15 Selenium test cases passed, and the container deployment is now UP on the server."
         }
         failure {
-            echo 'Tests Failed! Sending Email...'
-            mail to: 'qasimalik@gmail.com',
-                 subject: 'Jenkins Pipeline Failed: Shoe Store Tests',
-                 body: 'Hello Sir,\n\nThe Jenkins pipeline failed during the test stage.\n\nRegards.'
+            echo "Tests Failed! Cleaning up container and Sending Email..."
+            // Agar test fail ho jaye toh ghalat code wala container delete kar do
+            sh 'docker stop shoe-store-container || true'
+            sh 'docker rm shoe-store-container || true'
+            
+            mail to: "${PUSHER_EMAIL}",
+                 subject: "FAILED: Shoe Store Pipeline Failed",
+                 body: "Oops! The pipeline failed. The container was stopped. Please check the Jenkins console output to see which test case failed."
         }
     }
 }
