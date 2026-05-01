@@ -1,5 +1,5 @@
 # Alpine ki jagah standard node image use kar rahe hain
-FROM node:18
+FROM node:20
 
 # Google Chrome install karne ki commands (Selenium tests ke liye)
 RUN apt-get update && apt-get install -y wget gnupg \
