@@ -1,1 +1,1 @@
-Testing automatic Jenkins trigger from collaborator account.
+Testing automatic Jenkins trigger from collaborator account..
